@@ -25,6 +25,10 @@ class ClientAPI extends HTTPClient {
     post(ClientUrl, body)
   }
 
+  def createClient(customBody: String): WSResponse = {
+    post(ClientUrl, customBody)
+  }
+
   def updateClient(clientId: Int, firmName: String, firmMol: String, firmTown: String = "Sofia", firmAddr: String = "Ivan Stranski 3", firmIsVatReg: Boolean = false): WSResponse = {
     val body =
       s"""{

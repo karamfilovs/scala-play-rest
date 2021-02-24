@@ -9,7 +9,7 @@ class ClientSpec extends PlaySpec {
 
   "Clients" should {
 
-    "be returned with valid credentials" in {
+    "be returned for user with valid credentials" in {
       val response = api.clientAPI.getAllClients
       response.status mustBe 200
       response.body must not be empty
@@ -18,7 +18,7 @@ class ClientSpec extends PlaySpec {
 
   "Client" should {
 
-    "be returned when id is valid" in {
+    "be returned when client id is valid/existing" in {
       //Create new client
       val createResponse = api.clientAPI.createClient("Pragmatic2", "Alex Karamfilov")
       createResponse.status mustBe 200
@@ -31,12 +31,42 @@ class ClientSpec extends PlaySpec {
       api.clientAPI.deleteClient(id)
     }
 
-    "not be returned when id is invalid" in {
+    "not be returned when id is invalid/not-existing" in {
       val response = api.clientAPI.getClient(3424242)
       response.status mustBe 404
       response.body must not be empty
       response.body must include ("Клиента не е намерен")
     }
+
+    "be created with valid information" in {
+      val createResponse = api.clientAPI.createClient("CreateClientTest", "Alex Karamfilov")
+      createResponse.status mustBe 200
+      createResponse.body must include ("Клиента е създаден успешно!")
+      val json = Json.parse(createResponse.body)
+      val id = (json \ "success" \ "id").as[Int]
+      api.clientAPI.deleteClient(id)
+    }
+
+    "be created with mandatory and optional fields" in {
+      val body =
+        s"""{
+           |    "firm_name": "My company",
+           |    "firm_town": "Plovdiv",
+           |    "firm_addr": "Varna 50",
+           |    "firm_mol": "Georgi Ivanov",
+           |    "firm_is_reg_vat": false,
+           |    "person_name": "Random Name",
+           |    "country": "Bulgaria"
+           |
+           |}""".stripMargin
+      val createResponse = api.clientAPI.createClient(body)
+      createResponse.status mustBe 200
+      createResponse.body must include ("Клиента е създаден успешно!")
+      val json = Json.parse(createResponse.body)
+      val id = (json \ "success" \ "id").as[Int]
+      api.clientAPI.deleteClient(id)
+    }
+
 
     "be deleted successfully with valid id" in {
       //Create new client
