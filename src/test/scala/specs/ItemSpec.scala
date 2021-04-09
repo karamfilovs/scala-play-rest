@@ -7,7 +7,6 @@ class ItemSpec extends PlaySpec {
   val api = new API
 
   "Items" should {
-
     "be returned for user with valid credentials" in {
       val response = api.itemAPI.getAllItems
       response.status mustBe 200
