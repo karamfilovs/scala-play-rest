@@ -4,6 +4,9 @@ import api.API
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
+import java.time.OffsetDateTime
+import java.util.Date
+
 class ClientSpec extends PlaySpec {
   val api = new API
 
@@ -39,7 +42,7 @@ class ClientSpec extends PlaySpec {
     }
 
     "be created with valid information" in {
-      val createResponse = api.clientAPI.createClient("CreateClientTest", "Alex Karamfilov")
+      val createResponse = api.clientAPI.createClient("Company" + OffsetDateTime.now(), "Alex Karamfilov")
       createResponse.status mustBe 200
       createResponse.body must include ("Клиента е създаден успешно!")
       val json = Json.parse(createResponse.body)
@@ -50,7 +53,7 @@ class ClientSpec extends PlaySpec {
     "be created with mandatory and optional fields" in {
       val body =
         s"""{
-           |    "firm_name": "My company",
+           |    "firm_name": "My company ${OffsetDateTime.now()}",
            |    "firm_town": "Plovdiv",
            |    "firm_addr": "Varna 50",
            |    "firm_mol": "Georgi Ivanov",
@@ -70,7 +73,7 @@ class ClientSpec extends PlaySpec {
 
     "be deleted successfully with valid id" in {
       //Create new client
-      val createResponse = api.clientAPI.createClient("ToBeDeleted", "Alex Karamfilov")
+      val createResponse = api.clientAPI.createClient("ToBeDeleted" + OffsetDateTime.now(), "Alex Karamfilov")
       createResponse.status mustBe 200
       val json = Json.parse(createResponse.body)
       val id = (json \ "success" \ "id").as[Int]
