@@ -5,7 +5,6 @@ import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
 import java.time.OffsetDateTime
-import java.util.Date
 
 class ClientSpec extends PlaySpec {
   val api = new API
@@ -38,13 +37,13 @@ class ClientSpec extends PlaySpec {
       val response = api.clientAPI.getClient(3424242)
       response.status mustBe 404
       response.body must not be empty
-      response.body must include ("Клиента не е намерен")
+      response.body must include("Клиента не е намерен")
     }
 
     "be created with valid information" in {
       val createResponse = api.clientAPI.createClient("Company" + OffsetDateTime.now(), "Alex Karamfilov")
       createResponse.status mustBe 200
-      createResponse.body must include ("Клиента е създаден успешно!")
+      createResponse.body must include("Клиента е създаден успешно!")
       val json = Json.parse(createResponse.body)
       val id = (json \ "success" \ "id").as[Int]
       api.clientAPI.deleteClient(id)
@@ -64,7 +63,7 @@ class ClientSpec extends PlaySpec {
            |}""".stripMargin
       val createResponse = api.clientAPI.createClient(body)
       createResponse.status mustBe 200
-      createResponse.body must include ("Клиента е създаден успешно!")
+      createResponse.body must include("Клиента е създаден успешно!")
       val json = Json.parse(createResponse.body)
       val id = (json \ "success" \ "id").as[Int]
       api.clientAPI.deleteClient(id)
@@ -92,11 +91,10 @@ class ClientSpec extends PlaySpec {
       val response = api.clientAPI.updateClient(id, "Updated Company", "New Owner")
       response.status mustBe 200
       response.body must not be empty
-      response.body must include ("Клиента е редактиран успешно!")
+      response.body must include("Клиента е редактиран успешно!")
       //Delete client so that the test can work again
       api.clientAPI.deleteClient(id)
     }
-
 
 
   }

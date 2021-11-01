@@ -24,7 +24,7 @@ abstract class HTTPClient {
       logger.info(response.body)
   }
 
-  private def initRequest(path: String) = {
+  private def initRequest(path: String): WSRequest = {
     println("--------------------------------------- REQUEST ---------------------------------------")
     ws.url(baseUrl + path)
       .withHttpHeaders("Content-Type" -> "application/json", "Authorization" -> authHeaderValue)
