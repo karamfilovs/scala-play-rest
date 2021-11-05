@@ -14,7 +14,7 @@ class ClientSpec extends PlaySpec {
 
     "be returned for user with valid credentials" in {
       val response = api.clientAPI.getAllClients
-      response.status mustBe 201
+      response.status mustBe 200
       response.body must not be empty
     }
   }
