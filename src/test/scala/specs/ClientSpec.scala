@@ -10,20 +10,21 @@ import java.time.OffsetDateTime
 class ClientSpec extends PlaySpec {
   val api = new API
 
-  "Clients" should {
+  "All clients" should {
 
     "be returned for user with valid credentials" in {
       val response = api.clientAPI.getAllClients
-      response.status mustBe 200
+      response.status mustBe 201
       response.body must not be empty
     }
   }
 
   "Client" should {
 
-    "be returned when client id is valid/existing" in {
+    "be returned for valid client id" in {
       //Create new client
-      val createResponse = api.clientAPI.createClient(Client("Pragmatic", "Sofia", "Ivan Stranski", "Alex Karamfilov", false))
+      val client = Client("Pragmatic", "Sofia", "Ivan Stranski", "Alex Karamfilov", false)
+      val createResponse = api.clientAPI.createClient(client)
       createResponse.status mustBe 200
       val json = Json.parse(createResponse.body)
       val id = (json \ "success" \ "id").as[Int]
@@ -34,7 +35,7 @@ class ClientSpec extends PlaySpec {
       api.clientAPI.deleteClient(id)
     }
 
-    "not be returned when id is invalid/not-existing" in {
+    "not be returned for missing id" in {
       val response = api.clientAPI.getClient(3424242)
       response.status mustBe 404
       response.body must not be empty
@@ -61,7 +62,7 @@ class ClientSpec extends PlaySpec {
     }
 
 
-    "be deleted successfully with valid id" in {
+    "be deleted successfully when provided it exists" in {
       //Create new client
       val client = Client("Pragmatic" + OffsetDateTime.now(), "Sofia", "Ivan Stranski", "Alex Karamfilov", false, "Germany")
       val createResponse = api.clientAPI.createClient(client)
@@ -72,6 +73,12 @@ class ClientSpec extends PlaySpec {
       val response = api.clientAPI.deleteClient(id)
       response.status mustBe 200
       response.body mustBe "{\"success\":{\"message\":\"Клиента е изтрит\"}}"
+    }
+
+    "not be deleted for missing id" in {
+      val response = api.clientAPI.deleteClient(1212121212)
+      response.status mustBe 404
+      response.body must include ("Клиента не е намерен")
     }
 
     "be updated when id is valid and body is valid" in {

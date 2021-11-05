@@ -6,7 +6,7 @@ import org.scalatestplus.play.PlaySpec
 class BankAccountSpec extends PlaySpec {
   val api = new API
 
-  "Items" should {
+  "Bank accounts" should {
 
     "be returned for user with valid credentials" in {
       val response = api.bankAccountAPI.getAllBankAccounts
