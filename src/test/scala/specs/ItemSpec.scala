@@ -1,10 +1,11 @@
 package specs
 
 import api.API
+import dto.Item
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
-import java.time.LocalDateTime
+import java.time.{LocalDateTime, OffsetDateTime, OffsetTime}
 
 class ItemSpec extends PlaySpec {
   val api = new API
@@ -20,7 +21,8 @@ class ItemSpec extends PlaySpec {
 
   "Item" should {
     "be created with all mandatory fields" in {
-      val response = api.itemAPI.createItem("My Item" + LocalDateTime.now, 10, "кг.")
+      val item = Item("Coffee" + OffsetDateTime.now(), 10, "кг")
+      val response = api.itemAPI.createItem(item)
       response.status mustBe 200
       response.body must include ("Артикула е създаден успешно!")
       val json = Json.parse(response.body)

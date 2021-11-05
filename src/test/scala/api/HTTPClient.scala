@@ -1,5 +1,6 @@
 package api
 
+import com.google.gson.Gson
 import play.api.Logger
 import play.api.libs.ws.ahc.AhcCurlRequestLogger
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
@@ -15,6 +16,7 @@ abstract class HTTPClient {
   private val ws: WSClient = WSTestClient.newClient(PlayPort).asScala()
   private val logger: Logger = Logger(this.getClass)
   private val baseUrl: String = sys.props.getOrElse("url", "https://st2016.inv.bg/RESTapi")
+  private val Gson: Gson = new Gson().newBuilder().setPrettyPrinting().create()
 
 
   private def printResponse(response: WSRequest#Response): Unit = {
@@ -28,12 +30,12 @@ abstract class HTTPClient {
     println("--------------------------------------- REQUEST ---------------------------------------")
     ws.url(baseUrl + path)
       .withHttpHeaders("Content-Type" -> "application/json", "Authorization" -> authHeaderValue)
-      .withRequestFilter(AhcCurlRequestLogger.apply())
+      .withRequestFilter(AhcCurlRequestLogger())
   }
 
 
-  protected def post(path: String, body: String): WSResponse = {
-    val response = Await.result(initRequest(path).post(body), MaxWait)
+  protected def post[T](path: String, body: T): WSResponse = {
+    val response = Await.result(initRequest(path).post(Gson.toJson(body)), MaxWait)
     printResponse(response)
     response
 
@@ -52,8 +54,8 @@ abstract class HTTPClient {
   }
 
 
-  protected def put(path: String, body: String): WSResponse = {
-    val response = Await.result(initRequest(path).put(body), MaxWait)
+  protected def put[T](path: String, body: T): WSResponse = {
+    val response = Await.result(initRequest(path).put(Gson.toJson(body)), MaxWait)
     printResponse(response)
     response
   }

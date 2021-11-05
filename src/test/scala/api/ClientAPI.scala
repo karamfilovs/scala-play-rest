@@ -1,5 +1,6 @@
 package api
 
+import dto.Client
 import play.api.libs.ws.WSResponse
 
 class ClientAPI extends HTTPClient {
@@ -12,33 +13,9 @@ class ClientAPI extends HTTPClient {
 
   def deleteClient(id: Int): WSResponse = delete(s"$ClientUrl/$id")
 
-  def createClient(firmName: String, firmMol: String, firmTown: String = "Sofia", firmAddr: String = "Ivan Stranski 3", firmIsVatReg: Boolean = false): WSResponse = {
-    val body =
-      s"""{
-         |    "firm_name": "$firmName",
-         |    "firm_town": "$firmTown",
-         |    "firm_addr": "$firmAddr",
-         |    "firm_mol": "$firmMol",
-         |    "firm_is_reg_vat": "$firmIsVatReg"
-         |}""".stripMargin
+  def createClient(client: Client): WSResponse = post(ClientUrl, client)
 
-    post(ClientUrl, body)
-  }
+  def updateClient(clientId: Int, client: Client): WSResponse = put(s"$ClientUrl/$clientId", client)
 
-  def createClient(customBody: String): WSResponse = {
-    post(ClientUrl, customBody)
-  }
 
-  def updateClient(clientId: Int, firmName: String, firmMol: String, firmTown: String = "Sofia", firmAddr: String = "Ivan Stranski 3", firmIsVatReg: Boolean = false): WSResponse = {
-    val body =
-      s"""{
-         |    "firm_name": "$firmName",
-         |    "firm_town": "$firmTown",
-         |    "firm_addr": "$firmAddr",
-         |    "firm_mol": "$firmMol",
-         |    "firm_is_reg_vat": "$firmIsVatReg"
-         |}""".stripMargin
-
-    put(s"$ClientUrl/$clientId", body)
-  }
 }
