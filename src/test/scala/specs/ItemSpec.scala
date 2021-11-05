@@ -1,14 +1,12 @@
 package specs
 
-import api.API
 import dto.Item
-import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
-import java.time.{LocalDateTime, OffsetDateTime, OffsetTime}
+import java.time.OffsetDateTime
 
-class ItemSpec extends PlaySpec {
-  val api = new API
+class ItemSpec extends BaseSpec {
+
 
   "Items" should {
 
@@ -24,7 +22,7 @@ class ItemSpec extends PlaySpec {
       val item = Item("Coffee" + OffsetDateTime.now(), 10, "кг")
       val response = api.itemAPI.createItem(item)
       response.status mustBe 200
-      response.body must include ("Артикула е създаден успешно!")
+      response.body must include("Артикула е създаден успешно!")
       val json = Json.parse(response.body)
       val id = (json \ "success" \ "id").as[Int]
       api.itemAPI.deleteItem(id)
